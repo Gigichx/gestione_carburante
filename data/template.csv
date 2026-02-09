@@ -1,0 +1,61 @@
+Guida: Tabella 1
+📘 GUIDA RAPIDA - Numbers/Excel;;;;
+;;;;
+🟢 COME USARE;;;;
+1. Apri RIFORNIMENTI;;;;
+2. Aggiungi riga per ogni rifornimento;;;;
+3. Compila: Data, Km, Litri, Prezzo;;;;
+4. Seleziona: Pieno/Parziale e Tipo Guida;;;;
+;;;;
+📊 COSA GUARDARE;;;;
+- ANALISI: colonna L/100km;;;;
+- Media Mobile: trend reale;;;;
+- DASHBOARD: statistiche;;;;
+;;;;
+⚠️ IMPORTANTE;;;;
+NON guardare singolo rifornimento;;;;
+GUARDA media mobile e trend;;;;
+;;;;
+🎯 LE 3 DOMANDE;;;;
+1. Sto spendendo di più?;;;;
+2. Consumo più di prima?;;;;
+3. Quanto costa autostrada?;;;;
+
+Rifornimenti: Tabella 1
+Data;Km Totali;Litri Riforniti;Prezzo al Litro (€/L);Spesa Totale (€);Tipo Rifornimento;Tipo Guida;Note
+30/01/2026;183.724;6,070;1,640;10;Parziale;Misto;Primo rifornimento 
+02/02/2026;183.784;12,200;1,639;20;Parziale;Misto;
+
+Analisi: Tabella 1
+N°;Data;Km Totali;Litri;Tipo Guida;Km Percorsi;Consumo (km/L);Consumo (L/100km);Media Mobile 3;Spesa (€)
+1;30/01/2026;183.724;6,070;Misto;;;;;10
+2;;;;;;;;;
+3;;;;;;;;;
+4;;;;;;;;;
+5;;;;;;;;;
+6;;;;;;;;;
+7;;;;;;;;;
+8;;;;;;;;;
+
+Dashboard: Tabella 1
+💰 INDICATORI ECONOMICI;;
+Spesa Totale:;10;€
+Costo per Km:;0;€/km
+Costo per 100 km:;0;€
+Prezzo Medio:;2;€/L
+;;
+🚗 INDICATORI UTILIZZO;;
+Km Totali:;0;km
+Totale Rifornimenti:;1,0;
+Litri Totali:;6,070;L
+;;
+⛽ INDICATORI CONSUMO;;
+Consumo Medio:;;L/100km
+Consumo Migliore:;;L/100km
+Consumo Peggiore:;;L/100km
+;;
+🔍 CONTROLLI COERENZA;;
+Somma Km Percorsi:;;km
+Km Totali (Ultimo-Primo):;0;km
+Scarto:;;km
+Stato:;;
