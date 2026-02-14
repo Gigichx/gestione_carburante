@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FuelTracker - Gestione consumi carburante">
+    <meta name="theme-color" content="#2563eb">
+    <title>FuelTracker - Gestione Rifornimenti</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="https://static.thenounproject.com/png/38066-200.png">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>⛽ FuelTracker</h1>
+        <div class="header-actions">
+            <button id="exportBtn" class="btn-icon" title="Esporta CSV">💾</button>
+            <button id="importBtn" class="btn-icon" title="Importa CSV">📥</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Tab 1: Rifornimenti -->
+        <section id="rifornimenti-tab" class="tab-content active">
+            <div class="section-header">
+                <h2>📝 Rifornimenti</h2>
+                <button id="addRefuelBtn" class="btn-primary">➕ Nuovo</button>
+            </div>
+
+            <!-- Form Nuovo Rifornimento -->
+            <div id="refuelForm" class="refuel-form hidden">
+                <h3>Nuovo Rifornimento</h3>
+                <form id="refuelFormElement">
+                    <div class="form-group">
+                        <label for="inputData">📅 Data</label>
+                        <input type="date" id="inputData" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputKm">🚗 Km Totali</label>
+                        <input type="number" id="inputKm" step="1" placeholder="183724" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputLitri">⛽ Litri Riforniti</label>
+                        <input type="number" id="inputLitri" step="0.01" placeholder="43.20" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPrezzo">💶 Prezzo al Litro (€/L)</label>
+                        <input type="number" id="inputPrezzo" step="0.001" placeholder="1.680" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>💰 Spesa Totale</label>
+                        <input type="text" id="displaySpesa" readonly placeholder="Auto-calcolato">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo Rifornimento</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="tipo" value="pieno" checked>
+                                <span>⚫ Pieno</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="tipo" value="parziale">
+                                <span>◯ Parziale</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputGuida">🛣️ Tipo Guida</label>
+                        <select id="inputGuida" required>
+                            <option value="misto">Misto</option>
+                            <option value="città">Città</option>
+                            <option value="autostrada">Autostrada</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputNote">📝 Note (opzionale)</label>
+                        <textarea id="inputNote" rows="2" placeholder="Es: Primo rifornimento"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancelFormBtn" class="btn-secondary">Annulla</button>
+                        <button type="submit" class="btn-primary">Salva</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista Rifornimenti -->
+            <div id="refuelList" class="refuel-list">
+                <p class="empty-state">Nessun rifornimento. Clicca "➕ Nuovo" per iniziare.</p>
+            </div>
+        </section>
+
+        <!-- Tab 2: Analisi -->
+        <section id="analisi-tab" class="tab-content">
+            <div class="section-header">
+                <h2>📊 Analisi Consumi</h2>
+                <select id="filterGuida" class="filter-select">
+                    <option value="tutti">Tutti i tipi</option>
+                    <option value="misto">Solo Misto</option>
+                    <option value="città">Solo Città</option>
+                    <option value="autostrada">Solo Autostrada</option>
+                </select>
+            </div>
+
+            <div class="info-box">
+                <p>ℹ️ Vengono analizzati solo i rifornimenti <strong>PIENI</strong>. I parziali sono ignorati.</p>
+            </div>
+
+            <!-- Grafico Trend -->
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <!-- Lista Analisi -->
+            <div id="analysisList" class="analysis-list">
+                <p class="empty-state">Serve almeno 1 rifornimento pieno.</p>
+            </div>
+        </section>
+
+        <!-- Tab 3: Mensile -->
+        <section id="mensile-tab" class="tab-content">
+            <h2>📅 Statistiche Mensili</h2>
+
+            <!-- Selector Mese -->
+            <div class="month-selector">
+                <button id="prevMonthBtn" class="btn-month">◀</button>
+                <span id="currentMonth" class="current-month">Febbraio 2026</span>
+                <button id="nextMonthBtn" class="btn-month">▶</button>
+            </div>
+
+            <!-- Confronto Mese Corrente vs Precedente -->
+            <div class="card">
+                <h3>📊 Confronto Mensile</h3>
+                <div id="monthlyComparison" class="monthly-comparison">
+                    <!-- Popolato dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Grafico Trend Mensile -->
+            <div class="card">
+                <h3>📈 Trend Ultimi 6 Mesi</h3>
+                <div class="chart-container">
+                    <canvas id="monthlyTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Dettagli Mese -->
+            <div class="card">
+                <h3>📋 Dettagli Mese Selezionato</h3>
+                <div id="monthlyDetails" class="stats-grid">
+                    <!-- Popolato dinamicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 4: Dashboard -->
+        <section id="dashboard-tab" class="tab-content">
+            <h2>📈 Dashboard</h2>
+
+            <!-- Box Insights -->
+            <div class="card insights-card">
+                <h3>💡 Insights</h3>
+                <div id="insightsBox" class="insights-box">
+                    <p class="empty-state">Aggiungi più rifornimenti per vedere insights intelligenti</p>
+                </div>
+            </div>
+
+            <!-- Indicatori Economici -->
+            <div class="card">
+                <h3>💰 Indicatori Economici</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Spesa Totale</span>
+                        <span class="stat-value" id="statSpesaTotale">€0.00</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Costo per Km</span>
+                        <span class="stat-value" id="statCostoKm">€0.00/km</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Costo per 100 km</span>
+                        <span class="stat-value" id="statCosto100Km">€0.00</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Prezzo Medio</span>
+                        <span class="stat-value" id="statPrezzoMedio">€0.00/L</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicatori Utilizzo -->
+            <div class="card">
+                <h3>🚗 Indicatori Utilizzo</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Km Totali</span>
+                        <span class="stat-value" id="statKmTotali">0 km</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Totale Rifornimenti</span>
+                        <span class="stat-value" id="statNumRifornimenti">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Litri Totali</span>
+                        <span class="stat-value" id="statLitriTotali">0 L</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicatori Consumo -->
+            <div class="card">
+                <h3>⛽ Indicatori Consumo</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Consumo Medio</span>
+                        <span class="stat-value" id="statConsumoMedio">- L/100km</span>
+                    </div>
+                    <div class="stat-item success">
+                        <span class="stat-label">Consumo Migliore 🏆</span>
+                        <span class="stat-value" id="statConsumoMigliore">- L/100km</span>
+                    </div>
+                    <div class="stat-item warning">
+                        <span class="stat-label">Consumo Peggiore</span>
+                        <span class="stat-value" id="statConsumoPeggiore">- L/100km</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grafico Consumi per Tipo Guida -->
+            <div class="card">
+                <h3>📊 Consumo per Tipo Guida</h3>
+                <div class="chart-container">
+                    <canvas id="consumoChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="rifornimenti">
+            <span class="nav-icon">⛽</span>
+            <span class="nav-label">Rifornimenti</span>
+        </button>
+        <button class="nav-item" data-tab="analisi">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Analisi</span>
+        </button>
+        <button class="nav-item" data-tab="mensile">
+            <span class="nav-icon">📅</span>
+            <span class="nav-label">Mensile</span>
+        </button>
+        <button class="nav-item" data-tab="dashboard">
+            <span class="nav-icon">📈</span>
+            <span class="nav-label">Dashboard</span>
+        </button>
+    </nav>
+
+    <!-- Hidden File Input -->
+    <input type="file" id="fileInput" accept=".csv" style="display: none;">
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="JS/storage.js"></script>
+    <script src="JS/calculations.js"></script>
+    <script src="JS/charts.js"></script>
+    <script src="JS/app.js"></script>
+</body>
+</html>
